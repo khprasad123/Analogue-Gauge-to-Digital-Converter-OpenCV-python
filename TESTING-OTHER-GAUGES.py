@@ -11,7 +11,7 @@ def setStaticUserRealGaugeDetails():
     min_angle = 45 # input('Min angle (lowest possible angle of dial) - in degrees: ') #the lowest possible angle
     max_angle = 315 # input('Max angle (highest possible angle) - in degrees: ') #highest possible angle
     min_value = 0 #input('Min value: ') #usually zero
-    max_value = 10 #input('Max value: ') #maximum reading of the gauge
+    max_value = 150 #input('Max value: ') #maximum reading of the gauge
     units = 'kg/cm3' #input('Enter units: ')
     return float(min_angle),float(max_angle),float(min_value),float(max_value),units
 def resize(image):
@@ -24,6 +24,8 @@ def resize(image):
     if(height>1080):
         scale=0.40
     if(height>2000):
+        scale=0.38
+    if(height>2200):
         scale=0.30
     height = int(height * scale)
     width = int(width * scale)
@@ -75,8 +77,9 @@ def drawLine(x1,y1,x2,y2,image,outName):
     cv2.imwrite(outName+".jpg", image)
     return image
 def getImage():
-    img="IMAGE-EDITED-3.jpg"
-    image=getCurrentPath()+"/images/"+img
+    img="TEST-1.jpg"
+    image=getCurrentPath()+"/images-set2/"+img
+    # image=getCurrentPath()+"/images/"+img
     image=cv2.imread(image)
     image=sharpenImages(image)
     image=adjust_gamma(image,2)
@@ -92,7 +95,6 @@ def adjust_gamma(image, gamma=1.0):
     # apply gamma correction using the lookup table
     return cv2.LUT(image, table)
 def markLabels(image,x,y,r):
-    min_angle, max_angle, min_value, max_value, units=setStaticUserRealGaugeDetails()
     # The Range Marking
     separation = 10 #in degrees
     interval = int(360 / separation)
@@ -143,7 +145,7 @@ def getCircleAndCustomize(image):
     height, width = image.shape[:2]
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     showImage(gray)
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 20, np.array([]), 100, 50, 0,int(width*0.09))
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 20, np.array([]), 100, 50,0,30)
     a, b, c = circles.shape
     x,y,r = averageCircle(circles, b)
     showImage(drawCircle(image, x, y, r))
@@ -169,6 +171,8 @@ def getOutputValue(img,x, y, r):
     largest_end=0
     end_x=0
     end_y=0
+    start_x=0
+    start_y=0
     for i in range(0, len(lines)):
         for x1, y1, x2, y2 in lines[i]:
             diff1 = distance2Points(x, y, x1, y1)  # x, y is center of circle
@@ -185,8 +189,10 @@ def getOutputValue(img,x, y, r):
                 if(diff2>largest_end):
                     end_x=x2
                     end_y=y2
+                    start_x=x1
+                    start_y=y1
                     largest_end=diff2
-                cv2.line(img, (x, y), (x2, y2), (0, 255, 0), 2)
+                cv2.line(img, (x,y), (x2, y2), (0, 255, 0), 2)
     cv2.imwrite("FOUNDED-LINES.jpg", img)
     showImage(img)
     if(largest_end==0):
