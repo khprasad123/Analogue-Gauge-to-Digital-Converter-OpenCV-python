@@ -2,6 +2,8 @@
 import os
 import cv2
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+from datetime import datetime
 
 def getCurrentPath():
     currentFile = __file__
@@ -76,7 +78,7 @@ def drawLine(x1,y1,x2,y2,image,outName):
     cv2.imwrite(outName+".jpg", image)
     return image
 def getImage():
-    img="IMAGE-EDITED-3.jpg"
+    img="IMAGE-EDITED-2.jpg"
     image=getCurrentPath()+"/images/"+img
     image=cv2.imread(image)
     image=sharpenImages(image)
@@ -195,10 +197,19 @@ def getOutputValue(img,x, y, r):
     showImage(drawLine(x,y,end_x,end_y,img,"Needle-Identified"))
     return (findGuageValue(x,y,end_x,end_y))
 
+def writeText(image,text):
+    draw = ImageDraw.Draw(image)
+    helvetica = ImageFont.truetype(getCurrentPath()+"/Helvetica.ttf", 40)
+    draw.text((50, 50), str(text), fill=(255, 255, 0),font=helvetica)
+    draw.text((50, 20), str(datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")), fill=(255, 255, 0),font=helvetica)
+    image.save('OUTPUT.jpg')
+    showImage(cv2.imread(getCurrentPath()+'/OUTPUT.jpg'))
 def main():
     image= getImage()
     x,y,r = getCircleAndCustomize(image)
     newValue = getOutputValue(image,x,y,r)
+    image = Image.open('Needle-Identified.jpg')
+    writeText(image,"Output : "+str(newValue))
     print(newValue)
 if __name__=='__main__':
     main()
