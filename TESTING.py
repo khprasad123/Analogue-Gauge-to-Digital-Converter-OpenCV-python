@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import os
 import cv2
 import numpy as np
@@ -35,7 +35,7 @@ def resize(image):
     return image
 def showImage(image):
     cv2.imshow("Chumma",image)
-    cv2.waitKey()
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
 def sharpenImages(image):
     # Create the identity filter, but with the 1 shifted to the right!
@@ -144,7 +144,7 @@ def getCircleAndCustomize(image):
     height, width = image.shape[:2]
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     showImage(gray)
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 20, np.array([]), 100, 50, 0,int(width*0.09))
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 20, np.array([]), 100, 50, 0,int(width*0.1))
     a, b, c = circles.shape
     x,y,r = averageCircle(circles, b)
     showImage(drawCircle(image, x, y, r))
@@ -201,12 +201,6 @@ def main():
     x,y,r = getCircleAndCustomize(image)
     newValue = getOutputValue(image,x,y,r)
     print(newValue)
-if __name__=='__main__':
-=======
-import os
-import cv2
-import numpy as np
-
 def getCurrentPath():
     currentFile = __file__
     realPath = os.path.realpath(currentFile)
@@ -280,7 +274,7 @@ def drawLine(x1,y1,x2,y2,image,outName):
     cv2.imwrite(outName+".jpg", image)
     return image
 def getImage():
-    img="IMAGE-EDITED-6.jpg"
+    img="IMAGE-EDITED.jpg"
     image=getCurrentPath()+"/images/"+img
     image=cv2.imread(image)
     image=sharpenImages(image)
@@ -406,5 +400,4 @@ def main():
     newValue = getOutputValue(image,x,y,r)
     print(newValue)
 if __name__=='__main__':
->>>>>>> 1441fb88bfe0b41150f605ebeeee19534ba336a8
     main()
