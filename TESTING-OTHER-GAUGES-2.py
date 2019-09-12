@@ -36,7 +36,7 @@ def resize(image):
     return image
 def showImage(image):
     cv2.imshow("Chumma",image)
-    cv2.waitKey()
+    cv2.waitKey(1000)
     cv2.destroyAllWindows()
 def sharpenImages(image):
     # Create the identity filter, but with the 1 shifted to the right!
