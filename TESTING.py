@@ -78,7 +78,7 @@ def drawLine(x1,y1,x2,y2,image,outName):
     cv2.imwrite(outName+".jpg", image)
     return image
 def getImage():
-    img="IMAGE-EDITED-2.jpg"
+    img="IMAGE-EDITED.jpg"
     image=getCurrentPath()+"/images/"+img
     image=cv2.imread(image)
     image=sharpenImages(image)
